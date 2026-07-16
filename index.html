@@ -63,7 +63,7 @@
     <div class="app-container w-full max-w-[380px] bg-[#0c0c0c] relative flex flex-col justify-between overflow-hidden shadow-2xl border border-white/5">
         
         <!-- CUERPO DE LA APP -->
-        <div class="flex-grow flex flex-col justify-between pb-24 overflow-y-auto">
+        <div class="flex-grow flex flex-col justify-between pb-28 overflow-y-auto">
             
             <!-- 2. PORTADA & HERO (Ubicación de Seguridad Central) -->
             <header class="relative bg-gradient-to-b from-[#111111] via-[#141414] to-slate-950 pt-6 pb-6 px-5 text-center text-white rounded-b-[40px] shadow-2xl flex-shrink-0 border-b border-[#C6A43F]/15">
@@ -135,29 +135,35 @@
             </div>
         </div>
 
-        <!-- 12. BARRA DE NAVEGACIÓN INFERIOR (ESTILO APP NATIVA FIJA) -->
-        <nav class="absolute bottom-0 inset-x-0 bg-[#0c0c0c] border-t border-white/5 px-2 py-2.5 flex justify-around items-center z-20 shadow-2xl">
-            <button id="nav-services" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                <i class="fas fa-briefcase text-base"></i>
-                <span class="text-[9px] font-bold mt-1">Servicios</span>
-            </button>
-            <button id="nav-gallery" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                <i class="fas fa-images text-base"></i>
-                <span class="text-[9px] font-bold mt-1">Galería</span>
-            </button>
-            <button id="nav-testimonials" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                <i class="fas fa-comment-dots text-base"></i>
-                <span class="text-[9px] font-bold mt-1">Opiniones</span>
-            </button>
-            <button id="nav-info" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                <i class="fas fa-info-circle text-base"></i>
-                <span class="text-[9px] font-bold mt-1">Información</span>
-            </button>
-            <button id="nav-share" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                <i class="fas fa-share-alt text-base"></i>
-                <span class="text-[9px] font-bold mt-1">Compartir</span>
-            </button>
-        </nav>
+        <!-- 12. BARRA DE NAVEGACIÓN INFERIOR & PIE DE TARJETA ACTUALIZADO -->
+        <div class="absolute bottom-0 inset-x-0 bg-[#0c0c0c] border-t border-white/5 z-20 flex flex-col shadow-2xl">
+            <nav class="px-2 py-2.5 flex justify-around items-center">
+                <button id="nav-services" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
+                    <i class="fas fa-briefcase text-base"></i>
+                    <span class="text-[9px] font-bold mt-1">Servicios</span>
+                </button>
+                <button id="nav-gallery" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
+                    <i class="fas fa-images text-base"></i>
+                    <span class="text-[9px] font-bold mt-1">Galería</span>
+                </button>
+                <button id="nav-testimonials" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
+                    <i class="fas fa-comment-dots text-base"></i>
+                    <span class="text-[9px] font-bold mt-1">Opiniones</span>
+                </button>
+                <button id="nav-info" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
+                    <i class="fas fa-info-circle text-base"></i>
+                    <span class="text-[9px] font-bold mt-1">Información</span>
+                </button>
+                <button id="nav-share" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
+                    <i class="fas fa-share-alt text-base"></i>
+                    <span class="text-[9px] font-bold mt-1">Compartir</span>
+                </button>
+            </nav>
+            <!-- SELLO OFICIAL DE MARCA MANDATORIO V2.0 -->
+            <div class="text-center text-[8px] tracking-wider text-slate-600 font-medium bg-[#0c0c0c] pb-1.5 uppercase">
+                Creado por KONFÍO ZINC — Todos los derechos reservados
+            </div>
+        </div>
     </div>
 
     <!-- ================= MODALES DEL DESIGN SYSTEM FIJO ================= -->
@@ -304,7 +310,7 @@
                 setTimeout(() => toast.classList.remove('show'), 2200); 
             };
 
-            // Compartir URL de Producción Activa
+            // Compartir URL de Production Activa
             const urlReal = window.location.href;
             document.getElementById('nav-share').addEventListener('click', async (e) => {
                 e.preventDefault();
