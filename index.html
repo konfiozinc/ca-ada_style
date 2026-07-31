@@ -1,347 +1,535 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-950 select-none">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="theme-color" content="#c6a43f"/>
-    <title>La Cañada Style - Tarjeta Digital Profesional</title>
-    
-    <!-- Tailwind CSS & Librerías Oficiales del Design System -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <title>La Cañada Style - Tarjeta Digital Pro</title>
+
+    <!-- Script de QR dinámico autónomo -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+        
+        * { font-family: 'Inter', system-ui, -apple-system, sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #020617; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        
         .font-playfair { font-family: 'Playfair Display', serif; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { opacity: 0; animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        /* Efecto de Brillo Dorado Premium (Wow Effect) */
-        @keyframes goldGlow {
-            0%, 100% { border-color: rgba(243, 198, 119, 0.4); box-shadow: 0 0 12px rgba(198, 164, 63, 0.3); }
-            50% { border-color: rgba(198, 164, 63, 0.8); box-shadow: 0 0 20px rgba(243, 198, 119, 0.6); }
+
+        /* Chasis Fijo Móvil (380px max-width) */
+        .card-container {
+            width: 100%;
+            max-width: 380px;
+            height: 100vh;
+            max-height: 750px;
+            background: #0c0c0c;
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9);
+            border: 1px solid #c6a43f;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .wow-profile { animation: goldGlow 4s infinite ease-in-out; }
-        
-        /* Efecto de pulso controlado para el botón oficial de WhatsApp */
-        @keyframes whatsappPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 8px 20px -4px rgba(37, 211, 102, 0.4); }
-            50% { transform: scale(1.02); box-shadow: 0 14px 25px -4px rgba(37, 211, 102, 0.6); }
+
+        /* Header Dorado Premium / Oscuro */
+        .card-header {
+            background: linear-gradient(180deg, #111111 0%, #1a1a1a 100%);
+            padding: 22px 16px 18px 16px;
+            text-align: center;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            position: relative;
+            border-bottom: 1px solid rgba(198, 164, 63, 0.3);
         }
-        .pulse-whatsapp { animation: whatsappPulse 2s infinite ease-in-out; }
-        
-        .modal-overlay { position: fixed; inset: 0; background: rgba(12, 12, 12, 0.85); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background: #111111; border-radius: 28px; width: 100%; max-w: 326px; transform: scale(0.96); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(198, 164, 63, 0.15); }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-        .app-container { height: 100vh; height: 100dvh; }
-        
-        /* Toast Notification */
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: #fff; padding: 8px 20px; border-radius: 999px; font-size: 13px; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 2000; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        .badge-status {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: linear-gradient(90deg, #f3c677, #c6a43f);
+            color: #000000;
+            font-size: 8px;
+            font-weight: 900;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background: #ffffff;
+            border-radius: 50%;
+            margin: 10px auto 8px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #c6a43f;
+            box-shadow: 0 0 16px rgba(198, 164, 63, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Títulos */
+        .title-main { font-size: 24px; font-weight: 900; color: #ffffff; letter-spacing: -0.3px; line-height: 1.1; }
+        .title-sub { font-size: 10px; font-weight: 800; color: #c6a43f; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+        .slogan-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(198, 164, 63, 0.25);
+            border-radius: 12px;
+            padding: 6px 12px;
+            margin: 8px auto 0 auto;
+            max-width: 250px;
+        }
+        .slogan-text { font-size: 8.5px; font-weight: 900; color: #f3c677; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Cuerpo de Acciones */
+        .content-body {
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        /* Botón WhatsApp Oficial */
+        .btn-whatsapp {
+            background-color: #25d366;
+            color: white;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            padding: 12px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+        }
+
+        /* Grilla Categorías Glassmorphism */
+        .grid-services {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .service-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 8px 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .service-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(198, 164, 63, 0.15);
+            color: #f3c677;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .service-text { font-size: 9px; font-weight: 700; color: #d6d3d1; line-height: 1.2; }
+
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .btn-action {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .btn-vcard {
+            background: linear-gradient(90deg, #c6a43f, #f3c677);
+            color: #000000;
+            border: 1px solid #f3c677;
+            padding: 11px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(198, 164, 63, 0.3);
+        }
+
+        /* Barra Inferior */
+        .bottom-nav {
+            background: #000000;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 4px 6px 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-item {
+            color: #78716c;
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 8px;
+            font-weight: 700;
+            gap: 3px;
+            cursor: pointer;
+        }
+
+        /* Pie de Marca Blindado Konfío Zinc */
+        .brand-footer {
+            background: #000000;
+            color: #94a3b8;
+            font-size: 9px;
+            text-align: center;
+            padding: 8px 4px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+        }
+
+        /* Modales */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(4px);
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #111111;
+            border: 1px solid #c6a43f;
+            border-radius: 20px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+        .modal-header {
+            background: #1a1a1a;
+            color: #f3c677;
+            padding: 12px 16px;
+            font-weight: 800;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(198, 164, 63, 0.2);
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* Galería Snap Nativa */
+        .gallery-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 4px;
+        }
+        .gallery-item {
+            flex: 0 0 100%;
+            scroll-snap-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 180px;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .toast {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #c6a43f;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            display: none;
+            z-index: 60;
+        }
     </style>
 </head>
-<body class="bg-slate-950 w-full flex justify-center items-center overflow-hidden">
+<body>
 
-    <!-- 1. SPLASH SCREEN (Módulo Obligatorio) -->
-    <div id="splash" class="fixed inset-0 bg-[#0c0c0c] flex flex-col items-center justify-center z-[9999] transition-opacity duration-400">
-        <div class="text-center animate-pulse">
-            <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-[#C6A43F] to-[#F3C677] rounded-full flex items-center justify-center shadow-2xl border-4 border-white mb-3">
-                <i class="fas fa-scissors text-3xl text-black"></i>
+    <div class="card-container">
+        <div>
+            <!-- Header -->
+            <div class="card-header">
+                <span class="badge-status">Premium</span>
+                
+                <h1 class="title-main font-playfair">La Cañada Style</h1>
+                <div class="title-sub">Peluquería Profesional</div>
+
+                <!-- Avatar Foto Real -->
+                <div class="avatar-circle">
+                    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=300&auto=format" alt="La Cañada Style Logo Real" class="avatar-img">
+                </div>
+                
+                <div class="slogan-box">
+                    <div class="slogan-text">Corte · Barba · Tinte · Manicura</div>
+                </div>
             </div>
-            <h1 class="font-playfair text-2xl font-black text-[#C6A43F] tracking-wider">La Cañada Style</h1>
-            <p class="text-stone-400 text-[10px] font-bold uppercase tracking-widest mt-1">Peluquería Premium</p>
-        </div>
-    </div>
 
-    <!-- APP CONTAINER FIJO (ALTO DE PANTALLA CONTENIDO - SIN SCROLL WEB) -->
-    <div class="app-container w-full max-w-[380px] bg-[#0c0c0c] relative flex flex-col justify-between overflow-hidden shadow-2xl border border-white/5">
-        
-        <!-- CUERPO DE LA APP -->
-        <div class="flex-grow flex flex-col justify-between pb-28 overflow-y-auto">
+            <!-- Cuerpo Interactivo -->
+            <div class="content-body">
+                
+                <a href="https://wa.me/573242143861?text=Hola%20quiero%20agendar%20una%20cita%20en%20La%20Ca%C3%B1ada%20Style" target="_blank" class="btn-whatsapp">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                    ¡Agenda tu Cita Ya!
+                </a>
+
+                <div class="grid-services">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" x2="8.12" y1="4" y2="15.88"/><line x1="14.47" x2="20" y1="14.48" y2="20"/><line x1="8.12" x2="12" y1="8.12" y2="12"/></svg>
+                        </div>
+                        <span class="service-text">Corte de Autor</span>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <span class="service-text">Barba & Toalla</span>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <span class="service-text">Tinte & Mechas</span>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        </div>
+                        <span class="service-text">Manicura Premium</span>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <a href="tel:+573242143861" class="btn-action">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f3c677" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Llamar Directo
+                    </a>
+                    <a href="mailto:lacanadastyle@email.com" class="btn-action">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f3c677" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        Enviar Correo
+                    </a>
+                </div>
+
+                <button id="btn-vcard" class="btn-vcard">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+                    Guardar Contacto en Agenda
+                </button>
+
+            </div>
+        </div>
+
+        <!-- Navegación Inferior & Firma de Marca -->
+        <div>
+            <div class="bottom-nav">
+                <button class="nav-item" onclick="openModal('modal-services')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    <span>Servicios</span>
+                </button>
+                <button class="nav-item" onclick="openModal('modal-gallery')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    <span>Galería</span>
+                </button>
+                <button class="nav-item" onclick="openModal('modal-guarantee')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>Opiniones</span>
+                </button>
+                <button class="nav-item" onclick="openModal('modal-coverage')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
+                    <span>Info</span>
+                </button>
+                <button class="nav-item" onclick="openModal('modal-qr')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+                    <span>QR</span>
+                </button>
+            </div>
             
-            <!-- 2. PORTADA & HERO (Ubicación de Seguridad Central) -->
-            <header class="relative bg-gradient-to-b from-[#111111] via-[#141414] to-slate-950 pt-6 pb-6 px-5 text-center text-white rounded-b-[40px] shadow-2xl flex-shrink-0 border-b border-[#C6A43F]/15">
-                <div class="absolute top-3 right-4 bg-gradient-to-r from-[#F3C677] to-[#C6A43F] text-black font-black px-2.5 py-0.5 rounded-full text-[8px] uppercase tracking-wider shadow-md">
-                    Premium
-                </div>
-                
-                <!-- Título Superior Directo -->
-                <h2 class="text-3xl font-playfair font-black text-white mt-2 tracking-tight bg-gradient-to-r from-white via-stone-200 to-stone-400 bg-clip-text text-transparent">La Cañada Style</h2>
-                <p class="text-[#C6A43F] font-bold text-[10px] uppercase tracking-widest mt-0.5">Peluquería Profesional</p>
-                
-                <!-- FOTO / LOGO REAL DEL ESTUDIO (Asegurada al Centro contra Cortes) -->
-                <div class="w-24 h-24 mx-auto bg-white rounded-full flex flex-col items-center justify-center border-4 wow-profile p-0.5 my-3 shadow-lg block overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=300&auto=format" alt="La Cañada Style Logo Real" class="w-full h-full object-cover rounded-full">
-                </div>
-                
-                <!-- Eslogan de Especialidades -->
-                <div class="bg-black/50 rounded-xl p-2 border border-white/5 backdrop-blur-md max-w-[240px] mx-auto shadow-inner">
-                    <span class="text-[9px] block text-[#F3C677] uppercase tracking-widest font-black leading-tight">Corte · Barba · Tinte · Manicura</span>
-                </div>
-            </header>
+            <div class="brand-footer">
+                <strong style="color: #38bdf8;">KONFÍO ZINC</strong> @TODOS LOS DERECHOS RESERVADOS
+            </div>
+        </div>
 
-            <!-- CONTENIDO CENTRAL DE CONVERSIÓN -->
-            <div class="px-5 space-y-3.5 flex-grow flex flex-col justify-center mt-2">
-                
-                <!-- 3. BOTÓN PRINCIPAL CON COLOR OFICIAL DE WHATSAPP (#25D366) -->
-                <div class="fade-in-up">
-                    <a href="https://wa.me/573242143861?text=Hola%20quiero%20agendar%20una%20cita%20en%20La%20Cañada%20Style" target="_blank" class="w-full flex items-center justify-center bg-[#25D366] text-white font-black py-3.5 px-4 rounded-xl text-center text-xs uppercase tracking-wider transition-transform transform active:scale-95 shadow-lg shadow-green-500/20 pulse-whatsapp">
-                        <i class="fab fa-whatsapp text-xl mr-2 text-white"></i>¡AGENDA TU CITA YA!
-                    </a>
+        <!-- MODALES -->
+        <div id="modal-services" class="modal-overlay" onclick="closeModal('modal-services')">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <span>Servicios Premium</span>
+                    <button class="modal-close" onclick="closeModal('modal-services')">✕</button>
                 </div>
+                <div style="padding: 16px; font-size: 11px; line-height: 1.5; color: #d6d3d1;">
+                    <strong style="color: #f3c677; font-size: 12px;">✂️ Corte de Cabello</strong><br/>
+                    Hombre, mujer o niño – Estilos clásicos, vanguardistas y de tendencia.<br/><br/>
+                    <strong style="color: #f3c677; font-size: 12px;">🧔 Barba & Perfilado</strong><br/>
+                    Servicio completo premium con toalla caliente, navaja y loción hidratante.<br/><br/>
+                    <strong style="color: #f3c677; font-size: 12px;">🎨 Tinte & Mechas</strong><br/>
+                    Coloración de alta gama, cubrimiento uniforme de canas y reflejos estructurados.<br/><br/>
+                    <strong style="color: #f3c677; font-size: 12px;">💅 Manicura & Pedicura</strong><br/>
+                    Cuidado integral estético y profiláctico de manos y pies.
+                </div>
+            </div>
+        </div>
 
-                <!-- ESPECIALIDADES FILTRADAS EN CRISTAL OSCURO (Glassmorphism) -->
-                <div class="grid grid-cols-2 gap-2 fade-in-up">
-                    <div class="bg-white/5 border border-white/10 p-2.5 rounded-xl flex items-center gap-2 shadow-sm">
-                        <div class="w-6 h-6 bg-[#C6A43F]/10 rounded-lg flex items-center justify-center text-[#F3C677] text-xs flex-shrink-0 shadow-inner"><i class="fas fa-scissors"></i></div>
-                        <span class="text-[10px] font-bold text-stone-300 leading-tight">Corte de Autor</span>
+        <div id="modal-gallery" class="modal-overlay" onclick="closeModal('modal-gallery')">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <span>Galería de Estilos</span>
+                    <button class="modal-close" onclick="closeModal('modal-gallery')">✕</button>
+                </div>
+                <div style="padding: 16px;">
+                    <div class="gallery-scroll">
+                        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=600&auto=format" alt="Corte Ejecutivo"></div>
+                        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1599351431205-1d0a024b4b6d?q=80&w=600&auto=format" alt="Perfilado de Barba"></div>
+                        <div class="gallery-item"><img src="https://images.unsplash.com/photo-11600948836101-f9ffda59d250?q=80&w=600&auto=format" alt="Manicura Detail"></div>
                     </div>
-                    <div class="bg-white/5 border border-white/10 p-2.5 rounded-xl flex items-center gap-2 shadow-sm">
-                        <div class="w-6 h-6 bg-[#C6A43F]/10 rounded-lg flex items-center justify-center text-[#F3C677] text-xs flex-shrink-0 shadow-inner"><i class="fas fa-user-tie"></i></div>
-                        <span class="text-[10px] font-bold text-stone-300 leading-tight">Barba & Toalla</span>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 p-2.5 rounded-xl flex items-center gap-2 shadow-sm">
-                        <div class="w-6 h-6 bg-[#C6A43F]/10 rounded-lg flex items-center justify-center text-[#F3C677] text-xs flex-shrink-0 shadow-inner"><i class="fas fa-palette"></i></div>
-                        <span class="text-[10px] font-bold text-stone-300 leading-tight">Tinte & Mechas</span>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 p-2.5 rounded-xl flex items-center gap-2 shadow-sm">
-                        <div class="w-6 h-6 bg-[#C6A43F]/10 rounded-lg flex items-center justify-center text-[#F3C677] text-xs flex-shrink-0 shadow-inner"><i class="fas fa-sparkles"></i></div>
-                        <span class="text-[10px] font-bold text-stone-300 leading-tight">Manicura Premium</span>
-                    </div>
+                    <p style="font-size: 10px; color: #a8a29e; text-align: center; margin-top: 10px;">Desliza lateralmente para ver las transformaciones reales.</p>
                 </div>
-
-                <!-- ACCIONES RÁPIDAS (Llamar Directo & Correo) -->
-                <div class="grid grid-cols-2 gap-2 fade-in-up">
-                    <a href="tel:+573242143861" class="bg-white/5 border border-white/10 py-2.5 px-2 rounded-xl flex items-center justify-center gap-1.5 text-[10px] font-bold text-white transition-colors hover:bg-white/10">
-                        <i class="fas fa-phone text-[#C6A43F]"></i> Llamar Directo
-                    </a>
-                    <a href="mailto:lacanadastyle@email.com" class="bg-white/5 border border-white/10 py-2.5 px-2 rounded-xl flex items-center justify-center gap-1.5 text-[10px] font-bold text-white transition-colors hover:bg-white/10">
-                        <i class="fas fa-envelope text-[#C6A43F]"></i> Enviar Correo
-                    </a>
-                </div>
-            </div>
-            
-            <!-- ACCIÓN DE GUARDADO VCARD AUTOMATIZADA -->
-            <div class="px-5 mt-auto pt-2">
-                <button id="btn-vcard" class="w-full bg-[#C6A43F] hover:bg-[#b36217] text-black font-black py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-xs uppercase tracking-wider transition-colors shadow-md">
-                    <i class="fas fa-address-card"></i> Guardar Contacto en Agenda
-                </button>
             </div>
         </div>
 
-        <!-- 12. BARRA DE NAVEGACIÓN INFERIOR & PIE DE TARJETA ACTUALIZADO -->
-        <div class="absolute bottom-0 inset-x-0 bg-[#0c0c0c] border-t border-white/5 z-20 flex flex-col shadow-2xl">
-            <nav class="px-2 py-2.5 flex justify-around items-center">
-                <button id="nav-services" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                    <i class="fas fa-briefcase text-base"></i>
-                    <span class="text-[9px] font-bold mt-1">Servicios</span>
-                </button>
-                <button id="nav-gallery" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                    <i class="fas fa-images text-base"></i>
-                    <span class="text-[9px] font-bold mt-1">Galería</span>
-                </button>
-                <button id="nav-testimonials" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                    <i class="fas fa-comment-dots text-base"></i>
-                    <span class="text-[9px] font-bold mt-1">Opiniones</span>
-                </button>
-                <button id="nav-info" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                    <i class="fas fa-info-circle text-base"></i>
-                    <span class="text-[9px] font-bold mt-1">Información</span>
-                </button>
-                <button id="nav-share" class="flex flex-col items-center justify-center text-stone-500 hover:text-[#F3C677] w-12 transition-colors">
-                    <i class="fas fa-share-alt text-base"></i>
-                    <span class="text-[9px] font-bold mt-1">Compartir</span>
-                </button>
-            </nav>
-            <!-- SELLO OFICIAL DE MARCA MANDATORIO V2.0 -->
-            <div class="text-center text-[8px] tracking-wider text-slate-600 font-medium bg-[#0c0c0c] pb-1.5 uppercase">
-                Creado por KONFÍO ZINC — Todos los derechos reservados
+        <div id="modal-guarantee" class="modal-overlay" onclick="closeModal('modal-guarantee')">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <span>Reseñas de Clientes</span>
+                    <button class="modal-close" onclick="closeModal('modal-guarantee')">✕</button>
+                </div>
+                <div style="padding: 16px; font-size: 11px; line-height: 1.5; color: #d6d3d1;">
+                    <em>"El mejor corte que me han hecho. Atención de primera y ambiente muy acogedor."</em><br/>
+                    <strong style="color: #f3c677;">— Carlos A.</strong><br/><br/>
+                    <em>"Mi esposo quedó encantado con la barba. Volveremos seguro."</em><br/>
+                    <strong style="color: #f3c677;">— Laura G.</strong>
+                </div>
             </div>
         </div>
+
+        <div id="modal-coverage" class="modal-overlay" onclick="closeModal('modal-coverage')">
+            <div class="modal-box" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <span>Datos Operativos</span>
+                    <button class="modal-close" onclick="closeModal('modal-coverage')">✕</button>
+                </div>
+                <div style="padding: 16px; font-size: 11px; color: #d6d3d1; line-height: 1.5;">
+                    <strong style="color: #f3c677;">Horario:</strong><br/>
+                    Lun – Vie: 9:00 AM – 7:00 PM<br/>
+                    Sáb: 9:00 AM – 4:00 PM<br/><br/>
+                    <strong style="color: #f3c677;">Ubicación:</strong><br/>
+                    En la parte alta, El Morro, La Cañada<br/><br/>
+                    <strong style="color: #f3c677;">Teléfono:</strong> +57 324 214 3861
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-qr" class="modal-overlay" onclick="closeModal('modal-qr')">
+            <div class="modal-box" onclick="event.stopPropagation()" style="text-align: center; padding: 16px;">
+                <div class="modal-header" style="margin: -16px -16px 16px -16px;">
+                    <span>Compartir Tarjeta</span>
+                    <button class="modal-close" onclick="closeModal('modal-qr')">✕</button>
+                </div>
+                <div id="qrcode" style="display: flex; justify-content: center; background: white; padding: 10px; border-radius: 12px; width: fit-content; margin: 0 auto;"></div>
+                <p style="font-size: 10px; color: #a8a29e; margin-top: 10px;">Escanea este código desde otro celular para abrir al instante la tarjeta digital.</p>
+            </div>
+        </div>
+
+        <div id="toast" class="toast">Contacto guardado en agenda</div>
+
     </div>
-
-    <!-- ================= MODALES DEL DESIGN SYSTEM FIJO ================= -->
-
-    <!-- MODAL DE SERVICIOS -->
-    <div id="modal-services" class="modal-overlay">
-        <div class="modal-content overflow-hidden">
-            <div class="bg-[#1c1c1c] text-[#F3C677] p-4 font-bold text-xs uppercase tracking-wider flex justify-between items-center border-b border-white/5">
-                <span><i class="fas fa-briefcase mr-2"></i>Servicios Premium</span>
-                <button class="close-modal text-lg font-bold px-2 text-white/80 hover:text-white">&times;</button>
-            </div>
-            <div class="p-4 max-h-[60vh] overflow-y-auto space-y-3.5 text-stone-300">
-                <div class="p-3 bg-white/5 rounded-xl border border-white/5 shadow-sm">
-                    <h4 class="font-bold text-[#F3C677] text-xs uppercase">✂️ Corte de Cabello</h4>
-                    <p class="text-[11px] text-stone-400 mt-0.5 leading-relaxed">Hombre, mujer o niño – Estilos clásicos, vanguardistas y de tendencia.</p>
-                </div>
-                <div class="p-3 bg-white/5 rounded-xl border border-white/5 shadow-sm">
-                    <h4 class="font-bold text-[#F3C677] text-xs uppercase">🧔 Barba & Perfilado</h4>
-                    <p class="text-[11px] text-stone-400 mt-0.5 leading-relaxed">Servicio completo premium con toalla caliente, navaja y loción hidratante.</p>
-                </div>
-                <div class="p-3 bg-white/5 rounded-xl border border-white/5 shadow-sm">
-                    <h4 class="font-bold text-[#F3C677] text-xs uppercase">🎨 Tinte & Mechas</h4>
-                    <p class="text-[11px] text-stone-400 mt-0.5 leading-relaxed">Coloración de alta gama, cubrimiento uniforme de canas y reflejos estructurados.</p>
-                </div>
-                <div class="p-3 bg-white/5 rounded-xl border border-white/5 shadow-sm">
-                    <h4 class="font-bold text-[#F3C677] text-xs uppercase">💅 Manicura & Pedicura</h4>
-                    <p class="text-[11px] text-stone-400 mt-0.5 leading-relaxed">Cuidado integral estético y profiláctico de manos y pies.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE GALERÍA (SWIPER INTEGRADO) -->
-    <div id="modal-gallery" class="modal-overlay">
-        <div class="modal-content overflow-hidden">
-            <div class="bg-[#1c1c1c] text-[#F3C677] p-4 font-bold text-xs uppercase tracking-wider flex justify-between items-center border-b border-white/5">
-                <span><i class="fas fa-images mr-2"></i>Galería de Estilos</span>
-                <button class="close-modal text-lg font-bold px-2 text-white/80 hover:text-white">&times;</button>
-            </div>
-            <div class="p-4">
-                <div class="swiper-container shadow-md rounded-2xl border border-white/5">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=600&auto=format" alt="Corte Ejecutivo"></div>
-                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-1599351431205-1d0a024b4b6d?q=80&w=600&auto=format" alt="Perfilado de Barba"></div>
-                        <div class="swiper-slide"><img src="https://images.unsplash.com/photo-11600948836101-f9ffda59d250?q=80&w=600&auto=format" alt="Manicura Detail"></div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-                <p class="text-[10px] text-center text-stone-500 mt-2.5 font-medium">Desliza para examinar el set de transformaciones reales.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE TESTIMONIOS -->
-    <div id="modal-testimonials" class="modal-overlay">
-        <div class="modal-content overflow-hidden">
-            <div class="bg-[#1c1c1c] text-[#F3C677] p-4 font-bold text-xs uppercase tracking-wider flex justify-between items-center border-b border-white/5">
-                <span><i class="fas fa-comment-dots mr-2"></i>Reseñas de Clientes</span>
-                <button class="close-modal text-lg font-bold px-2 text-white/80 hover:text-white">&times;</button>
-            </div>
-            <div class="p-4 max-h-[60vh] overflow-y-auto space-y-3 text-stone-300">
-                <div class="bg-white/5 p-3 rounded-xl border border-white/5 shadow-sm">
-                    <p class="italic text-[11px] leading-relaxed text-stone-300">"El mejor corte que me han hecho. Atención de primera y ambiente muy acogedor."</p>
-                    <p class="text-[9px] font-bold text-[#F3C677] text-right mt-1.5">— Carlos A.</p>
-                </div>
-                <div class="bg-white/5 p-3 rounded-xl border border-white/5 shadow-sm">
-                    <p class="italic text-[11px] leading-relaxed text-stone-300">"Mi esposo quedó encantado con la barba. Volveremos seguro."</p>
-                    <p class="text-[9px] font-bold text-[#F3C677] text-right mt-1.5">— Laura G.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE INFORMACIÓN -->
-    <div id="modal-info" class="modal-overlay">
-        <div class="modal-content overflow-hidden">
-            <div class="bg-[#1c1c1c] text-[#F3C677] p-4 font-bold text-xs uppercase tracking-wider flex justify-between items-center border-b border-white/5">
-                <span><i class="fas fa-info-circle mr-2"></i>Datos Operativos</span>
-                <button class="close-modal text-lg font-bold px-2 text-white/80 hover:text-white">&times;</button>
-            </div>
-            <div class="p-4 space-y-3 text-stone-300 text-[11px]">
-                <div class="p-3 bg-white/5 rounded-xl border border-white/5 flex items-start gap-3">
-                    <i class="fas fa-clock text-[#F3C677] text-sm mt-0.5"></i>
-                    <span>Lun – Vie: 9:00 AM – 7:00 PM<br/>Sáb: 9:00 AM – 4:00 PM</span>
-                </div>
-                <div class="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center gap-3">
-                    <i class="fas fa-map-marker-alt text-[#F3C677] text-sm"></i>
-                    <span>En la parte alta, El Morro, La Cañada</span>
-                </div>
-                <div class="p-3 bg-white/5 rounded-xl border border-white/5 flex items-center gap-3">
-                    <i class="fas fa-phone-alt text-[#F3C677] text-sm"></i>
-                    <span>+57 324 214 3861</span>
-                </div>
-                <p class="text-[10px] text-stone-500 text-center font-semibold italic mt-1">* Última atención disponible 30 min antes del cierre.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- TOAST NOTIFICACIÓN -->
-    <div class="toast" id="toast"></div>
 
     <script>
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Desvanecimiento del Splash Screen
-            setTimeout(() => {
-                const splash = document.getElementById('splash');
-                if(splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => splash.style.display = 'none', 400);
-                }
-            }, 1000);
-
-            // Controlador de Modales del Framework
-            const setupAppModal = (triggerId, modalId) => {
-                const trigger = document.getElementById(triggerId);
-                const modal = document.getElementById(modalId);
-                if (!trigger || !modal) return;
-                
-                trigger.addEventListener('click', (e) => { e.preventDefault(); modal.classList.add('active'); });
-                modal.querySelector('.close-modal').addEventListener('click', () => modal.classList.remove('active'));
-                modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); });
-            };
-
-            // Vincular los disparadores de navegación
-            setupAppModal('nav-services', 'modal-services');
-            setupAppModal('nav-gallery', 'modal-gallery');
-            setupAppModal('nav-testimonials', 'modal-testimonials');
-            setupAppModal('nav-info', 'modal-info');
-
-            // Swiper de la galería de trabajos
-            new Swiper('.swiper-container', {
-                slidesPerView: 1,
-                spaceBetween: 0,
-                pagination: { el: '.swiper-pagination', clickable: true },
-                loop: true,
-                autoplay: { delay: 3000, disableOnInteraction: false }
-            });
-
-            // Toast de Feedback
-            const toast = document.getElementById('toast');
-            const showToast = (msg) => { 
-                toast.textContent = msg; 
-                toast.classList.add('show'); 
-                setTimeout(() => toast.classList.remove('show'), 2200); 
-            };
-
-            // Compartir URL de Production Activa
-            const urlReal = window.location.href;
-            document.getElementById('nav-share').addEventListener('click', async (e) => {
-                e.preventDefault();
-                try {
-                    if (navigator.share) {
-                        await navigator.share({ title: 'La Cañada Style', url: urlReal });
-                    } else {
-                        await navigator.clipboard.writeText(urlReal);
-                        showToast('Enlace copiado al portapapeles');
-                    }
-                } catch(err) {}
-            });
-
-            // Descarga de vCard Corporativa
-            const btnVcard = document.getElementById('btn-vcard');
-            if (btnVcard) {
-                btnVcard.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:La Cañada Style\nORG:Peluquería Premium\nTEL;TYPE=CELL,VOICE;PREF=1:+573242143861\nEMAIL:lacanadastyle@email.com\nNOTE:Tu estilo, nuestra pasión. Cortes, barba, tintes y más.\nURL:${urlReal}\nEND:VCARD`;
-                    const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = 'La_Canada_Style.vcf';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                    showToast('Contacto guardado en agenda');
+            const qrBox = document.getElementById("qrcode");
+            if(qrBox) {
+                new QRCode(qrBox, {
+                    text: window.location.href,
+                    width: 130,
+                    height: 130,
+                    colorDark : "#111111",
+                    colorLight : "#ffffff"
                 });
             }
+
+            const toast = document.getElementById('toast');
+            const showToast = (msg) => {
+                toast.textContent = msg;
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 2200);
+            };
+
+            document.getElementById('btn-vcard').addEventListener('click', () => {
+                const vCardData = `BEGIN:VCARD\nVERSION:3.0\nFN:La Canada Style\nORG:Peluqueria Premium\nTEL;TYPE=CELL:+573242143861\nEMAIL:lacanadastyle@email.com\nNOTE:Tu estilo, nuestra pasion. Cortes, barba, tintes y mas.\nEND:VCARD`;
+                const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'La_Canada_Style.vcf';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Contacto guardado en agenda');
+            });
         });
     </script>
 </body>
